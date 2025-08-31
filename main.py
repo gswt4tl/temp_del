@@ -7,6 +7,7 @@ logging.basicConfig(level=logging.INFO, filename='tempdel.log',
                     filemode='w', format='%(asctime)s %(levelname)s %(message)s')
 
 
+# Очистка директории
 def clear_directory(path):
     try:
         if not os.path.exists(path):
@@ -38,6 +39,53 @@ def clear_directory(path):
         return False
 
 
+# Безопасная очистка директории
+def safe_clear_directory(path):
+    abs_path = os.path.abspath(path)
+    forbidden_paths = [r'C:\\Windows', r'C:\\Program Files',
+                       r'C:\\Program Files (x86)', r'C:\\', os.path.expanduser('~')]
+    for forbidden_path in forbidden_paths:
+        if abs_path.startswith(forbidden_path) and abs_path != forbidden_path:
+            if abs_path not in [os.path.abspath(p) for p in filepaths]:
+                logging.error(f'Попытка очистки запрещённой папки: {abs_path}')
+                return False
+    return clear_directory(abs_path)
+
+
+def main():
+    print('Начинаем очистку временных файлов')
+    print('Будут очищены следующие папки:')
+    for path in filepaths:
+        print(f' - {path}')
+
+    # Запрос подтверждения
+    confirm = input('\nПродолжить? (y/n): ').lower()
+    if confirm not in ['y', 'yes', 'д', 'да']:
+        print('Очистка отменена')
+        return
+
+    print('\nНачинаем очистку...')
+
+    for filepath in filepaths:
+        print(f'\nОчищаем: {filepath}')
+        success = safe_clear_directory(filepath)
+        if success:
+            print(f'✓ {filepath} - очистка завершена')
+        else:
+            print(f'✗ {filepath} - ошибка при очистке')
+
+    print('\nОчистка завершена')
+
+
 username = getpass.getuser()
 filepaths = [fr'C:\Users\{username}\AppData\Local\Temp',
              'C:\Windows\Prefetch', 'C:\Windows\Temp']
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('\nОчистка прервана пользователем')
+    except Exception as e:
+        print(f'Неожиданная ошибка: {e}')
