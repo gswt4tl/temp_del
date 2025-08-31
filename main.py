@@ -1,5 +1,6 @@
 ﻿import os
 import shutil
+import getpass
 
 
 def clear_directory(path):
@@ -20,3 +21,8 @@ def clear_directory(path):
     except Exception as e:
         print(f'Критическая ошибка при очистке {path}: {e}')
         return False
+
+
+username = getpass.getuser()
+filepaths = [fr'C:\Users\{username}\AppData\Local\Temp',
+             'C:\Windows\Prefetch', 'C:\Windows\Temp']
