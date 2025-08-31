@@ -9,6 +9,15 @@ logging.basicConfig(level=logging.INFO, filename='tempdel.log',
 
 def clear_directory(path):
     try:
+        if not os.path.exists(path):
+            logging.warning(f'Путь не существует: {path}')
+            return False
+        if not os.path.isdir(path):
+            logging.warning(f'Путь не является директорией: {path}')
+            return False
+
+        logging.info(f'Очистка директории: {path}')
+
         for item in os.listdir(path):
             item_path = os.path.join(path, item)
             try:
