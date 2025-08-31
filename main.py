@@ -1,6 +1,10 @@
 ﻿import os
 import shutil
 import getpass
+import logging
+
+logging.basicConfig(level=logging.INFO, filename='tempdel.log',
+                    filemode='w', format='%(asctime)s %(levelname)s %(message)s')
 
 
 def clear_directory(path):
@@ -10,16 +14,18 @@ def clear_directory(path):
             try:
                 if os.path.isfile(item_path):
                     os.remove(item_path)
+                    logging.info(f'Удален файл: {item_path}')
                 if os.path.isdir(item_path):
-                    shutil.rmtree(dir, ignore_errors=True)
+                    shutil.rmtree(item_path)
+                    logging.info(f'Удалена папка: {item_path}')
             except PermissionError:
-                print(f'Нет прав для удаления: {item_path}')
+                logging.warning(f'Нет прав для удаления: {item_path}')
             except Exception as e:
-                print(f'Ошибка при удалении {item_path}: {e}')
+                logging.error(f'Ошибка при удалении {item_path}: {e}')
         return True
 
     except Exception as e:
-        print(f'Критическая ошибка при очистке {path}: {e}')
+        logging.error(f'Критическая ошибка при очистке {path}: {e}')
         return False
 
 
