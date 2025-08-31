@@ -79,7 +79,7 @@ def main():
 
 username = getpass.getuser()
 filepaths = [fr'C:\Users\{username}\AppData\Local\Temp',
-             'C:\Windows\Prefetch', 'C:\Windows\Temp']
+             r'C:\Windows\Prefetch', r'C:\Windows\Temp']
 
 
 if __name__ == '__main__':
